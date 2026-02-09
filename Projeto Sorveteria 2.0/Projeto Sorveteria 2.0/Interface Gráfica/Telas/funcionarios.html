@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="style-vendas.css">
+        <title>Funcionarios</title>
+    </head>
+    <body>
+        <div class="container-principal">
+            <nav class="navbar">
+                <div class="navbar-content">
+                    <h2 class="logo">🍦 Sorveteria Pro</h2>
+                    <div class="nav-right">
+                        <div class="nav-links">
+                            <a href="vendas.html" class="nav-link">Vendas</a>
+                            <a href="relatorio.html" class="nav-link">Relatorios</a>
+                            <a href="produtos.html" class="nav-link">Produtos</a>
+                            <a href="funcionarios.html" class="nav-link ativo">Funcionarios</a>
+                            <a href="login.html" class="nav-link nav-link-sair">Sair</a>
+                        </div>
+                        <div class="nav-user">
+                            <span id="usuario-nome" class="nav-user-nome">Visitante</span>
+                            <span id="usuario-cargo" class="nav-user-cargo"></span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="conteudo">
+                <div class="header-secao">
+                    <div>
+                        <h1>Funcionarios</h1>
+                        <p>Gerencie cadastro, edicao e exclusao de funcionarios</p>
+                    </div>
+                </div>
+
+                <div class="grid-vendas">
+                    <div class="card-formulario">
+                        <form id="formFuncionario">
+                            <div class="secao-form">
+                                <h3>Editar Funcionario</h3>
+
+                                <input type="hidden" id="funcionario-id" value=""/>
+
+                                <div class="campo-input">
+                                    <label for="funcionario-nome">Nome *</label>
+                                    <input type="text" id="funcionario-nome" placeholder="Nome completo" required>
+                                </div>
+
+                                <div class="campo-input">
+                                    <label for="funcionario-email">Email *</label>
+                                    <input type="email" id="funcionario-email" placeholder="email@exemplo.com" required>
+                                </div>
+
+                                <div class="campo-input">
+                                    <label for="funcionario-cargo">Cargo *</label>
+                                    <input type="text" id="funcionario-cargo" placeholder="Ex: admin, vendedor" required>
+                                </div>
+
+                                <div class="campo-input">
+                                    <label for="funcionario-senha">Senha (opcional)</label>
+                                    <input type="password" id="funcionario-senha" placeholder="Nova senha">
+                                </div>
+                            </div>
+
+                            <div class="botoes-form">
+                                <button type="button" class="btn-secundario" onclick="limparFormulario()">Limpar</button>
+                                <button type="submit" class="btn-primario">Salvar Alteracoes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-historico">
+                        <div class="header-card">
+                            <h3>Lista de Funcionarios</h3>
+                            <input type="text" id="busca-funcionarios" placeholder="Buscar..." class="input-busca">
+                        </div>
+
+                        <div class="tabela-container">
+                            <table class="tabela-vendas">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Cargo</th>
+                                        <th>Acoes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-funcionarios">
+                                    <tr class="vazio">
+                                        <td colspan="4">Nenhum funcionario encontrado</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function atualizarUsuarioLogado() {
+                let usuario = null;
+                try {
+                    usuario = JSON.parse(localStorage.getItem('usuario'));
+                } catch (e) {
+                    usuario = null;
+                }
+                const nomeEl = document.getElementById('usuario-nome');
+                const cargoEl = document.getElementById('usuario-cargo');
+                if (!nomeEl || !cargoEl) return;
+
+                const nome = usuario && usuario.nome ? usuario.nome : (localStorage.getItem('usuario_nome') || '');
+                const cargo = usuario && usuario.cargo ? usuario.cargo : (localStorage.getItem('usuario_cargo') || '');
+
+                if (!nome) {
+                    nomeEl.textContent = 'Visitante';
+                    cargoEl.textContent = '';
+                    return;
+                }
+
+                nomeEl.textContent = nome;
+                cargoEl.textContent = cargo || 'Sem cargo';
+            }
+
+            const linkSair = document.querySelector('.nav-link-sair');
+            if (linkSair) linkSair.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('usuario');
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                atualizarUsuarioLogado();
+            });
+        </script>
+        <script src="funcionarios.js"></script>
+    </body>
+</html>

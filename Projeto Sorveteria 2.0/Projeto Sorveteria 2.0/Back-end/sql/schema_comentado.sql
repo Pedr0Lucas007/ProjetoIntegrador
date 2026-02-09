@@ -1,0 +1,56 @@
+-- Este arquivo documenta o schema do banco em formato de comentario.
+-- As definicoes abaixo estao comentadas para servir como anotacao.
+
+-- TABELA: usuario
+-- CREATE TABLE IF NOT EXISTS usuario (
+--     id SERIAL PRIMARY KEY,
+--     nome VARCHAR(255) NOT NULL,
+--     email VARCHAR(255) NOT NULL,
+--     senha VARCHAR(255) NOT NULL,
+--     cargo VARCHAR(100) NOT NULL
+-- );
+-- CREATE UNIQUE INDEX IF NOT EXISTS usuario_email_unique ON usuario (LOWER(email));
+
+-- TABELA: produtos
+-- CREATE TABLE IF NOT EXISTS produtos (
+--     id SERIAL PRIMARY KEY,
+--     nome VARCHAR(255) NOT NULL,
+--     categoria VARCHAR(100),
+--     preco DECIMAL(10, 2) NOT NULL,
+--     custo DECIMAL(10, 2) NOT NULL,
+--     lucro DECIMAL(10, 2),
+--     margem DECIMAL(10, 2),
+--     estoque INTEGER DEFAULT 0,
+--     descricao TEXT,
+--     ativo BOOLEAN DEFAULT true,
+--     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+-- CREATE INDEX IF NOT EXISTS idx_produtos_categoria ON produtos(categoria);
+-- CREATE INDEX IF NOT EXISTS idx_produtos_ativo ON produtos(ativo);
+
+-- TABELA: vendas
+-- CREATE TABLE IF NOT EXISTS vendas (
+--     id SERIAL PRIMARY KEY,
+--     cliente VARCHAR(255) NOT NULL,
+--     forma_pagamento VARCHAR(50) NOT NULL,
+--     desconto NUMERIC(10, 2) DEFAULT 0,
+--     precototal NUMERIC(10, 2) DEFAULT 0,
+--     data_venda TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     produto_id INTEGER NULL,
+--     quantidade INTEGER NULL DEFAULT 1
+-- );
+-- ALTER TABLE vendas ALTER COLUMN quantidade SET DEFAULT 1;
+-- ALTER TABLE vendas ALTER COLUMN quantidade DROP NOT NULL;
+-- ALTER TABLE vendas ALTER COLUMN produto_id DROP NOT NULL;
+
+-- TABELA: itens_venda
+-- CREATE TABLE IF NOT EXISTS itens_venda (
+--     id SERIAL PRIMARY KEY,
+--     venda_id INTEGER NOT NULL REFERENCES vendas(id) ON DELETE CASCADE,
+--     produto_id INTEGER NOT NULL REFERENCES produtos(id),
+--     quantidade INTEGER NOT NULL,
+--     preco_unitario NUMERIC(10, 2) NOT NULL,
+--     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+-- CREATE INDEX IF NOT EXISTS idx_itens_venda_id ON itens_venda(venda_id);

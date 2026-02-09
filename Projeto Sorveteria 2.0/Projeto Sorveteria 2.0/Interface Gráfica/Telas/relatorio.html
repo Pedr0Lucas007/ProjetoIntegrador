@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="style-vendas.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+        <title>Relatórios</title>
+    </head>
+    <body>
+        <div class="container-principal">
+            <!-- Barra de Navegação -->
+            <nav class="navbar">
+                <div class="navbar-content">
+                    <h2 class="logo">🍦 Sorveteria Pro</h2>
+                    <div class="nav-right">
+                        <div class="nav-links">
+                            <a href="vendas.html" class="nav-link">Vendas</a>
+                            <a href="relatorio.html" class="nav-link ativo">Relatórios</a>
+                            <a href="produtos.html" class="nav-link">Produtos</a>
+                            <a href="funcionarios.html" class="nav-link">Funcionarios</a>
+                            <a href="login.html" class="nav-link nav-link-sair">Sair</a>
+                        </div>
+                        <div class="nav-user">
+                            <span id="usuario-nome" class="nav-user-nome">Visitante</span>
+                            <span id="usuario-cargo" class="nav-user-cargo"></span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="conteudo">
+                <!-- Seção de Título -->
+                <div class="header-secao">
+                    <div>
+                        <h1>Relatórios de Vendas</h1>
+                        <p>Análise completa das vendas e desempenho</p>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="card-filtros">
+                    <div class="grupo-filtros">
+                        <div class="campo-input compact">
+                            <label for="filtro-data-inicio">Data Inicial</label>
+                            <input type="date" id="filtro-data-inicio">
+                        </div>
+                        
+                        <div class="campo-input compact">
+                            <label for="filtro-data-final">Data Final</label>
+                            <input type="date" id="filtro-data-final">
+                        </div>
+
+                        <div class="campo-input compact">
+                            <label for="filtro-pagamento">Forma de Pagamento</label>
+                            <select id="filtro-pagamento">
+                                <option value="">Todas</option>
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="credito">Cartão de Crédito</option>
+                                <option value="debito">Cartão de Débito</option>
+                                <option value="pix">PIX</option>
+                            </select>
+                        </div>
+
+                        <div class="botoes-filtro">
+                            <button class="btn-filtro" onclick="aplicarFiltros()">Aplicar Filtros</button>
+                            <button class="btn-filtro-limpo" onclick="limparFiltros()">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicadores Principais -->
+                <div class="grid-indicadores">
+                    <div class="indicador-card">
+                        <div class="icone-indicador">📊</div>
+                        <div class="conteudo-indicador">
+                            <p class="label-indicador">Total de Vendas</p>
+                            <p class="valor-indicador" id="total-vendas">R$ 0,00</p>
+                            <p class="variacao" id="variacao-vendas">↑ 0% vs período anterior</p>
+                        </div>
+                    </div>
+
+                    <div class="indicador-card">
+                        <div class="icone-indicador">🛒</div>
+                        <div class="conteudo-indicador">
+                            <p class="label-indicador">Nº de Transações</p>
+                            <p class="valor-indicador" id="num-transacoes">0</p>
+                            <p class="variacao" id="variacao-transacoes">↑ 0% vs período anterior</p>
+                        </div>
+                    </div>
+
+                    <div class="indicador-card">
+                        <div class="icone-indicador">💰</div>
+                        <div class="conteudo-indicador">
+                            <p class="label-indicador">Ticket Médio</p>
+                            <p class="valor-indicador" id="ticket-medio">R$ 0,00</p>
+                            <p class="variacao" id="variacao-ticket">↑ 0% vs período anterior</p>
+                        </div>
+                    </div>
+
+                    <div class="indicador-card">
+                        <div class="icone-indicador">🏆</div>
+                        <div class="conteudo-indicador">
+                            <p class="label-indicador">Produto Top</p>
+                            <p class="valor-indicador" id="produto-top">-</p>
+                            <p class="variacao" id="qtd-top">0 vendidos</p>
+                        </div>
+                    </div>
+
+                    <div class="indicador-card">
+                        <div class="icone-indicador">📈</div>
+                        <div class="conteudo-indicador">
+                            <p class="label-indicador">Margem de Lucro</p>
+                            <p class="valor-indicador" id="margem-lucro">0%</p>
+                            <p class="variacao" id="lucro-total">R$ 0,00 de lucro</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos -->
+                <div class="grid-graficos">
+                    <div class="card-grafico">
+                        <h3>Vendas por Dia</h3>
+                        <canvas id="grafico-vendas-dia"></canvas>
+                    </div>
+
+                    <div class="card-grafico">
+                        <h3>Forma de Pagamento</h3>
+                        <canvas id="grafico-pagamento"></canvas>
+                    </div>
+
+                    <div class="card-grafico">
+                        <h3>Produtos Mais Vendidos</h3>
+                        <canvas id="grafico-produtos"></canvas>
+                    </div>
+
+                    <div class="card-grafico">
+                        <h3>Distribuição de Vendas</h3>
+                        <canvas id="grafico-distribuicao"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tabela Detalhada -->
+                <div class="card-tabela-detalhada">
+                    <div class="header-card">
+                        <h3>Detalhamento de Vendas</h3>
+                        <div class="grupo-acoes">
+                            <input type="text" id="busca-detalhes" placeholder="Buscar..." class="input-busca">
+                            <button class="btn-exportar" onclick="exportarRelatorio()">📥 Exportar</button>
+                        </div>
+                    </div>
+
+                    <div class="tabela-container">
+                        <table id="tabela-detalhes" class="tabela-vendas">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Data/Hora</th>
+                                    <th>Cliente</th>
+                                    <th>Produtos</th>
+                                    <th>Quantidade</th>
+                                    <th>Subtotal</th>
+                                    <th>Desconto</th>
+                                    <th>Total</th>
+                                    <th>Pagamento</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-detalhes">
+                                <tr class="vazio">
+                                    <td colspan="10">Nenhuma venda encontrada</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function atualizarUsuarioLogado() {
+                let usuario = null;
+                try {
+                    usuario = JSON.parse(localStorage.getItem('usuario'));
+                } catch (e) {
+                    usuario = null;
+                }
+                const nomeEl = document.getElementById('usuario-nome');
+                const cargoEl = document.getElementById('usuario-cargo');
+                if (!nomeEl || !cargoEl) return;
+
+                const nome = usuario && usuario.nome ? usuario.nome : (localStorage.getItem('usuario_nome') || '');
+                const cargo = usuario && usuario.cargo ? usuario.cargo : (localStorage.getItem('usuario_cargo') || '');
+
+                if (!nome) {
+                    nomeEl.textContent = 'Visitante';
+                    cargoEl.textContent = '';
+                    return;
+                }
+
+                nomeEl.textContent = nome;
+                cargoEl.textContent = cargo || 'Sem cargo';
+            }
+
+            const linkSair = document.querySelector('.nav-link-sair');
+            if (linkSair) linkSair.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('usuario');
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                atualizarUsuarioLogado();
+            });
+        </script>
+        <script src="relatorio.js"></script>
+    </body>
+</html>

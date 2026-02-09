@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="style-vendas.css">
+        <title>Gerenciar Produtos</title>
+    </head>
+    <body>
+        <div class="container-principal">
+            <nav class="navbar">
+                <div class="navbar-content">
+                    <h2 class="logo">🍦 Sorveteria Pro</h2>
+                    <div class="nav-right">
+                        <div class="nav-links">
+                            <a href="vendas.html" class="nav-link">Vendas</a>
+                            <a href="relatorio.html" class="nav-link">Relatórios</a>
+                            <a href="produtos.html" class="nav-link ativo">Produtos</a>
+                            <a href="funcionarios.html" class="nav-link">Funcionarios</a>
+                            <a href="login.html" class="nav-link nav-link-sair">Sair</a>
+                        </div>
+                        <div class="nav-user">
+                            <span id="usuario-nome" class="nav-user-nome">Visitante</span>
+                            <span id="usuario-cargo" class="nav-user-cargo"></span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="conteudo">
+                <div class="header-secao">
+                    <div>
+                        <h1>Gerenciar Produtos</h1>
+                        <p>Adicione, edite ou remova produtos do seu catálogo</p>
+                    </div>
+                    <div class="totais-rapidos">
+                        <div class="card-mini">
+                            <span class="label-mini">Total de Produtos</span>
+                            <span class="numero-mini" id="total-produtos">0</span>
+                        </div>
+                        <div class="card-mini">
+                            <span class="label-mini">Estoque Total</span>
+                            <span class="numero-mini" id="estoque-total">0</span>
+                        </div>
+                        <div class="card-mini">
+                            <span class="label-mini">Lucro Estimado</span>
+                            <span class="numero-mini" id="lucro-total">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-vendas">
+                    <div class="card-formulario">
+                        <form id="formProduto">
+                            <div class="secao-form">
+                                <h3>Cadastro de Produto</h3>
+                                
+                                <div class="campo-input">
+                                    <label for="nomeProduto">Nome do Produto *</label>
+                                    <input type="text" id="nomeProduto" placeholder="Ex: Sorvete de Baunilha" required>
+                                </div>
+
+                                <div class="grupo-campos">
+                                    <div class="campo-input">
+                                        <label for="custo">Custo (R$) *</label>
+                                        <input type="number" id="custo" step="0.01" min="0" placeholder="0.00" required>
+                                    </div>
+
+                                    <div class="campo-input">
+                                        <label for="preco">Preço de Venda (R$) *</label>
+                                        <input type="number" id="preco" step="0.01" min="0" placeholder="0.00" required>
+                                    </div>
+                                </div>
+
+                                <div class="grupo-campos">
+                                    <div class="campo-input">
+                                        <label for="margem">Margem de Lucro (%)</label>
+                                        <input type="number" id="margem" step="0.01" min="0" placeholder="0.00" readonly>
+                                    </div>
+
+                                    <div class="campo-input">
+                                        <label for="estoque">Estoque *</label>
+                                        <input type="number" id="estoque" min="0" placeholder="0" required>
+                                    </div>
+                                </div>
+
+                                <div class="campo-input">
+                                    <label for="categoria">Categoria *</label>
+                                    <select id="categoria" required>
+                                        <option value="">Selecione a categoria</option>
+                                        <option value="sorvete">Sorvete</option>
+                                        <option value="picole">Picolé</option>
+                                        <option value="acai">Açaí</option>
+                                        <option value="milkshake">Milkshake</option>
+                                        <option value="outros">Outros</option>
+                                    </select>
+                                </div>
+
+                                <div class="campo-input">
+                                    <label for="descricao">Descrição</label>
+                                    <textarea id="descricao" placeholder="Descrição do produto..." rows="3"></textarea>
+                                </div>
+
+                                <div class="campo-input">
+                                    <label for="ativo">
+                                        <input type="checkbox" id="ativo" checked>
+                                        Produto Ativo
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="botoes-form">
+                                <button type="reset" class="btn-secundario">Limpar</button>
+                                <button type="submit" class="btn-primario">SALVAR PRODUTO</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card-historico">
+                        <div class="header-card">
+                            <h3>Produtos Cadastrados</h3>
+                            <input type="text" id="buscaProduto" placeholder="Buscar..." class="input-busca">
+                        </div>
+                        
+                        <div class="tabela-container">
+                            <table class="tabela-vendas">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Categoria</th>
+                                        <th>Custo</th>
+                                        <th>Preço</th>
+                                        <th>Lucro</th>
+                                        <th>Estoque</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaProdutos">
+                                    <tr class="vazio">
+                                        <td colspan="6">Nenhum produto cadastrado</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function atualizarUsuarioLogado() {
+                let usuario = null;
+                try {
+                    usuario = JSON.parse(localStorage.getItem('usuario'));
+                } catch (e) {
+                    usuario = null;
+                }
+                const nomeEl = document.getElementById('usuario-nome');
+                const cargoEl = document.getElementById('usuario-cargo');
+                if (!nomeEl || !cargoEl) return;
+
+                const nome = usuario && usuario.nome ? usuario.nome : (localStorage.getItem('usuario_nome') || '');
+                const cargo = usuario && usuario.cargo ? usuario.cargo : (localStorage.getItem('usuario_cargo') || '');
+
+                if (!nome) {
+                    nomeEl.textContent = 'Visitante';
+                    cargoEl.textContent = '';
+                    return;
+                }
+
+                nomeEl.textContent = nome;
+                cargoEl.textContent = cargo || 'Sem cargo';
+            }
+
+            const linkSair = document.querySelector('.nav-link-sair');
+            if (linkSair) linkSair.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('usuario');
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                atualizarUsuarioLogado();
+            });
+        </script>
+        <script src="produtos.js"></script>
+    </body>
+</html>

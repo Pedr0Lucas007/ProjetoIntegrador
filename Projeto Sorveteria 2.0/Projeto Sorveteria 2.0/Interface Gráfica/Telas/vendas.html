@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="style-vendas.css">
+        <title>Registrar Vendas</title>
+    </head>
+    <body>
+        <div class="container-principal">
+            <!-- Barra de Navegação -->
+            <nav class="navbar">
+                <div class="navbar-content">
+                    <h2 class="logo">🍦 Sorveteria Pro</h2>
+                    <div class="nav-right">
+                        <div class="nav-links">
+                            <a href="vendas.html" class="nav-link ativo">Vendas</a>
+                            <a href="relatorio.html" class="nav-link">Relatórios</a>
+                            <a href="produtos.html" class="nav-link">Produtos</a>
+                            <a href="funcionarios.html" class="nav-link">Funcionarios</a>
+                            <a href="login.html" class="nav-link nav-link-sair">Sair</a>
+                        </div>
+                        <div class="nav-user">
+                            <span id="usuario-nome" class="nav-user-nome">Visitante</span>
+                            <span id="usuario-cargo" class="nav-user-cargo"></span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="conteudo">
+                <!-- Seção de Título -->
+                <div class="header-secao">
+                    <div>
+                        <h1>Registrar Venda</h1>
+                        <p>Adicione uma nova venda ao sistema</p>
+                    </div>
+                    <div class="totais-rapidos">
+                        <div class="card-mini">
+                            <span class="label-mini">Vendas Hoje</span>
+                            <span class="numero-mini" id="vendas-hoje">0</span>
+                        </div>
+                        <div class="card-mini">
+                            <span class="label-mini">Total</span>
+                            <span class="numero-mini" id="total-hoje">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-vendas">
+                    <!-- Formulário de Venda -->
+                    <div class="card-formulario">
+                        <form id="formVenda">
+                            <div class="secao-form">
+                                <h3>Informações da Venda</h3>
+                                
+                                <div class="grupo-campos">
+                                    <div class="campo-input">
+                                        <label for="cliente">Cliente *</label>
+                                        <input type="text" id="cliente" placeholder="Nome do cliente" required>
+                                    </div>
+                                    
+                                    <div class="campo-input">
+                                        <label for="telefone">Telefone</label>
+                                        <input type="tel" id="telefone" placeholder="(00) 0000-0000">
+                                    </div>
+                                </div>
+
+                                <h3 class="titulo-produtos">Produtos</h3>
+
+                                <div id="lista-produtos" class="lista-produtos">
+                                    <div class="item-produto">
+                                        <div class="campo-input">
+                                            <label for="produto-0">Produto *</label>
+                                            <select id="produto-0" class="produto-select" required>
+                                                <option value="">Selecione um produto</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="campo-input">
+                                            <label for="quantidade-0">Quantidade *</label>
+                                            <input type="number" id="quantidade-0" class="quantidade-input" min="1" value="1" required>
+                                        </div>
+
+                                        <div class="campo-input">
+                                            <label for="preco-0">Preço Unitário *</label>
+                                            <input type="number" id="preco-0" class="preco-input" step="0.01" min="0" placeholder="0.00" required>
+                                        </div>
+
+                                        <div class="campo-input">
+                                            <label for="subtotal-0">Subtotal</label>
+                                            <input type="number" id="subtotal-0" class="subtotal-input" disabled>
+                                        </div>
+
+                                        <button type="button" class="btn-remover" onclick="removerProduto(0)" title="Remover produto">
+                                            ✕
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn-adicionar-produto" onclick="adicionarProduto()">
+                                    + Adicionar Produto
+                                </button>
+
+                                <div class="secao-totais">
+                                    <div class="campo-total">
+                                        <label>Subtotal</label>
+                                        <span id="subtotal-geral">R$ 0,00</span>
+                                    </div>
+                                    <div class="campo-total">
+                                        <label>Desconto (%)</label>
+                                        <input type="number" id="desconto" min="0" step="0.01" value="0">
+                                    </div>
+                                    <div class="campo-total destaque">
+                                        <label>Total</label>
+                                        <span id="total-vendas">R$ 0,00</span>
+                                    </div>
+                                </div>
+
+                                <div class="campo-input">
+                                    <label for="forma-pagamento">Forma de Pagamento *</label>
+                                    <select id="forma-pagamento" required>
+                                        <option value="">Selecione a forma de pagamento</option>
+                                        <option value="dinheiro">Dinheiro</option>
+                                        <option value="credito">Cartão de Crédito</option>
+                                        <option value="debito">Cartão de Débito</option>
+                                        <option value="pix">PIX</option>
+                                    </select>
+                                </div>
+
+                                <div class="campo-input">
+                                    <label for="observacoes">Observações</label>
+                                    <textarea id="observacoes" placeholder="Adicione observações..." rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="botoes-form">
+                                <button type="reset" class="btn-secundario">Limpar</button>
+                                <button type="submit" class="btn-primario">REGISTRAR VENDA</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Histórico de Vendas Recentes -->
+                    <div class="card-historico">
+                        <div class="header-card">
+                            <h3>Vendas Recentes</h3>
+                            <input type="text" id="busca-vendas" placeholder="Buscar..." class="input-busca">
+                        </div>
+                        
+                        <div class="tabela-container">
+                            <table id="tabela-vendas" class="tabela-vendas">
+                                <thead>
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>Produtos</th>
+                                        <th>Quantidade</th>
+                                        <th>Total</th>
+                                        <th>Data/Hora</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-vendas">
+                                    <tr class="vazio">
+                                        <td colspan="6">Nenhuma venda registrada</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function atualizarUsuarioLogado() {
+                let usuario = null;
+                try {
+                    usuario = JSON.parse(localStorage.getItem('usuario'));
+                } catch (e) {
+                    usuario = null;
+                }
+                const nomeEl = document.getElementById('usuario-nome');
+                const cargoEl = document.getElementById('usuario-cargo');
+                if (!nomeEl || !cargoEl) return;
+
+                const nome = usuario && usuario.nome ? usuario.nome : (localStorage.getItem('usuario_nome') || '');
+                const cargo = usuario && usuario.cargo ? usuario.cargo : (localStorage.getItem('usuario_cargo') || '');
+
+                if (!nome) {
+                    nomeEl.textContent = 'Visitante';
+                    cargoEl.textContent = '';
+                    return;
+                }
+
+                nomeEl.textContent = nome;
+                cargoEl.textContent = cargo || 'Sem cargo';
+            }
+
+            const linkSair = document.querySelector('.nav-link-sair');
+            if (linkSair) linkSair.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('usuario');
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            });
+            
+            // Inicializar página ao carregar
+            document.addEventListener('DOMContentLoaded', function() {
+                atualizarUsuarioLogado();
+                console.log('Página de Vendas carregada');
+                carregarProdutos();
+                carregarVendas();
+                configurarEventos();
+            });
+        </script>
+        <script src="vendas.js"></script>
+    </body>
+</html>
